@@ -1,0 +1,30 @@
+x-common: &s
+ restart: always
+ networks: 
+  - common-network
+version: "3.3"
+services:
+ frontend:
+  image: frontend
+  <<: *s
+  build: frontend/
+  ports:
+   - "3005:3005"
+ backend:
+  image: backend
+  <<: *s
+  build: backend/
+  ports:
+   - "3006:3006"
+  depends_on:
+   - mongo
+ mongo:
+  image: mongo
+  volumes:
+   - ./data:/data/db
+  <<: *s
+  ports:
+   - "27017:27017"
+networks:
+ common-network:
+  
