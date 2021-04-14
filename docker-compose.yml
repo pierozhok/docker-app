@@ -6,22 +6,31 @@ version: "3.3"
 services:
  frontend:
   image: frontend
+  environment:
+   API_HOST: 0.0.0.0
+   PROD_STATE: true
   <<: *s
   build: frontend/
   ports:
    - "3005:3005"
  backend:
   image: backend
+  environment:
+   HOST: 0.0.0.0
   <<: *s
   build: backend/
   ports:
    - "3006:3006"
+  command: sh -c './wait-for mongo:27017 -- npm start'
   depends_on:
    - mongo
  mongo:
   image: mongo
   volumes:
    - ./data:/data/db
+  environment:
+   DB_NAME: books_db
+   DB_COLLECTION: mybooks
   <<: *s
   ports:
    - "27017:27017"
